@@ -77,32 +77,25 @@ class KNN:
         return max(classes, key=classes.get)
 
 
-#soft harvest
-class SoftSetegIris:
-    @staticmethod
-    def classifyIris(sample, irisFrame):
-        listOfVariety,listOfColumns = [],[]
-        dictOfVariety, dictOfColumns = {},{}
-        for i in range(len(irisFrame['variety'])):
-            if irisFrame['variety'][i] not in listOfVariety:
-                listOfVariety.append(irisFrame['variety'][i])
-        for i in range(len(listOfVariety)):
-            dictOfVariety[listOfVariety[i]] = {}
-        listOfColumns = pandas.Index.to_list(irisFrame.columns)
-        for i in range(len(listOfColumns)-1):
-            dictOfColumns[listOfColumns[i]] = 0
-        for i in range(len(listOfVariety)):
-            dictOfVariety[listOfVariety[i]] = 0
-        dictOfDicts = dict.fromkeys(listOfVariety, dictOfColumns)
-        mainSoftSet = pandas.concat({k: pandas.DataFrame.from_dict(v, 'index') for k, v in dictOfDicts.items()},axis=1) 
-        for i in range(len(dictOfColumns)-1):
-            dictOfColumns[listOfColumns[i]] = irisFrame[listOfColumns[i]].mean() 
-            temp = irisFrame.loc[irisFrame['variety']== listOfVariety[i]]
-            for j in range(len(dictOfColumns)):
-                if temp[listOfColumns[j]].mean() > dictOfColumns[listOfColumns[j]]: 
-                   mainSoftSet.loc[listOfColumns[j],listOfVariety[i]] = 1 
-                elif temp[listOfColumns[j]].mean() < dictOfColumns[listOfColumns[j]]: 
-                    mainSoftSet.loc[listOfColumns[j],listOfVariety[i]] = 0
 
+iris=DataProcessing.shuffle(iris)
+iris=DataProcessing.normalize(iris)
+irisTrain, irisVal = DataProcessing.splitSet(iris)
+irisTrainGroupMean = irisTrain.groupby('variety').mean()
+irisTrainMean = irisTrain.mean()
+print("\n irisTrainGroupMean = Zbiór treningowy z użyciem średnich wartości \n{}\n".format(irisTrain.groupby('variety').mean()))
+print("\n irisTrainMean = Zbiór treningowy z użyciem średnich wartości dla całej klasy\n{}\n".format(irisTrain.mean()))
+print("Przykładowy rekord irisTrainGroupMean {} ".format(irisTrainGroupMean['sepal.length']['Setosa'])) #pojedynczy rekord 
+print("Przykładowy rekord irisTrainMean {} ".format(irisTrainMean['sepal.length']))
 
-        return mainSoftSet
+nullSet = irisTrainGroupMean.copy(deep=True)
+
+for i in range(len(irisTrainGroupMean)):
+    for j in range(len(irisTrainMean)):
+        if irisTrainGroupMean.iloc[i][j] > irisTrainMean.iloc[j]:
+            nullSet.iloc[i][j] = 1
+        if irisTrainGroupMean.iloc[i][j] < irisTrainMean.iloc[j]:
+            nullSet.iloc[i][j] = 0
+
+print("\n Zbiór miękki irysów \n{}\n".format(nullSet))
+    
