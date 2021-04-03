@@ -78,6 +78,26 @@ class KNN:
 
 
 #softset
+class SoftSetVeges:
+    @staticmethod
+    def classify(sample, X, Y):
+        #obliczanie składowych
+        
+        tempKeys = list(sample.keys())
+        values = {}
+        for i in range(0,len(X)):
+            values[X[i]] = 0        
+        for i in range(0,len(Y)):
+            result = 0
+            for j in range(0,len(tempKeys)):
+                result += Y[i][tempKeys[j]]*sample[tempKeys[j]]
+            values[X[i]] = result   
+                
+        highest = max(values.values())
+        return ([k for k, v in values.items() if v == highest])
+
+    
+#SoftSet Testing
 iris=DataProcessing.shuffle(iris)
 iris=DataProcessing.normalize(iris)
 irisTrain, irisVal = DataProcessing.splitSet(iris)
