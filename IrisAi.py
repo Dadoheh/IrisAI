@@ -77,7 +77,7 @@ class KNN:
         return max(classes, key=classes.get)
 
 
-
+#softset
 iris=DataProcessing.shuffle(iris)
 iris=DataProcessing.normalize(iris)
 irisTrain, irisVal = DataProcessing.splitSet(iris)
