@@ -115,6 +115,21 @@ class SoftSetIris:
         return equal
 
     
+#Clustering Testing
+corrected=0
+k=5   
+irisShuffled = DataProcessing.shuffle(iris)
+irisNormalized = DataProcessing.normalize(iris)
+irisMixedTrain, irisMixedVal = DataProcessing.splitSet(iris)
+for i in range(len(irisMixedVal.index)):
+    classes={'Setosa':0,'Virginica':0,'Versicolor':0}
+    result = KNN.clustering(irisMixedVal.iloc[i],irisMixedTrain,k,classes)
+    if result == irisMixedVal.iloc[i].variety:
+        corrected+=1
+print(corrected)
+accurancy = corrected/len(irisMixedVal)*100
+print("Celność AI metodą klasteryzacji KNN: {}%".format(round(accurancy,2)))
+ 
 #SoftSet Testing
 iris=DataProcessing.shuffle(iris)
 iris=DataProcessing.normalize(iris)
