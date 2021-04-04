@@ -84,7 +84,6 @@ class SoftSetIris:
         
         irisTrainGroupMean = irisTrainBase.groupby('variety').mean()
         print("\n irisTrainGroupMean = Zbiór treningowy z użyciem średnich wartości \n{}\n".format(irisTrain.groupby('variety').mean()))
-
         irisTrainMean = irisTrainBase.mean()
         print("\n irisTrainMean = Zbiór treningowy z użyciem średnich wartości dla całej klasy\n{}\n".format(irisTrain.mean()))
         print("Przykładowy rekord irisTrainGroupMean {} ".format(irisTrainGroupMean['sepal.length']['Setosa'])) #pojedynczy rekord 
@@ -99,20 +98,17 @@ class SoftSetIris:
                 if irisTrainGroupMean.iloc[i][j] < irisTrainMean.iloc[j]:
                     nullSet.iloc[i][j] = 0
         print("\n Zbiór miękki irysów \n{}\n".format(nullSet))
-        
+
         #typing class of Iris
         equal = {}
         #sampleDict = sample.to_dict()
         namesOfClasses = list(nullSet.index)
-        print()
-        
         for i in range(0,3):
             tempEqual = 0
             for j in range(0,4):
             #wymnóż sigma( sample[] * class[i][atr])
                 tempEqual += sample[j]*nullSet.iloc[i][j]
             equal[namesOfClasses[i]] = tempEqual
-        
         highest = max(equal.values())
         return ([k for k, v in equal.items() if v == highest])
         
