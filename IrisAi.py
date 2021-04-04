@@ -116,16 +116,11 @@ class SoftSetIris:
 
     
 #SoftSet Testing
-#testing IrisSoftSet
 iris=DataProcessing.shuffle(iris)
 iris=DataProcessing.normalize(iris)
 irisTrain, irisVal = DataProcessing.splitSet(iris)
 sample = irisTrain.iloc[random.randrange(0,len(irisTrain))]
-#print("sample:  \n\n{} ".format(sample))
-#print(type(sample))
 sampleDict = sample.to_dict()
-#print(sampleDict)
-#print(list(sampleDict.keys()))
 print("AI oceniło klasę próbki jako: ===== {}\n".format(SoftSetIris.classifyIris(sample, irisTrain, irisVal)))
 print("Rzeczywista klasa próbki: ===== {}\n".format(sample.loc['variety']))
 
