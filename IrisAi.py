@@ -78,44 +78,59 @@ class KNN:
 
 
 #softset
-class SoftSetVeges:
+class SoftSetIris:
     @staticmethod
-    def classify(sample, X, Y):
-        #obliczanie składowych
+    def classifyIris(sample, irisTrainBase, valBase):
         
-        tempKeys = list(sample.keys())
-        values = {}
-        for i in range(0,len(X)):
-            values[X[i]] = 0        
-        for i in range(0,len(Y)):
-            result = 0
-            for j in range(0,len(tempKeys)):
-                result += Y[i][tempKeys[j]]*sample[tempKeys[j]]
-            values[X[i]] = result   
-                
-        highest = max(values.values())
-        return ([k for k, v in values.items() if v == highest])
+        irisTrainGroupMean = irisTrainBase.groupby('variety').mean()
+        print("\n irisTrainGroupMean = Zbiór treningowy z użyciem średnich wartości \n{}\n".format(irisTrain.groupby('variety').mean()))
+
+        irisTrainMean = irisTrainBase.mean()
+        print("\n irisTrainMean = Zbiór treningowy z użyciem średnich wartości dla całej klasy\n{}\n".format(irisTrain.mean()))
+        print("Przykładowy rekord irisTrainGroupMean {} ".format(irisTrainGroupMean['sepal.length']['Setosa'])) #pojedynczy rekord 
+        print("Przykładowy rekord irisTrainMean {} ".format(irisTrainMean['sepal.length']))
+        nullSet = irisTrainGroupMean.copy(deep=True)
+        
+        #setting 0,1
+        for i in range(len(irisTrainGroupMean)):
+            for j in range(len(irisTrainMean)):
+                if irisTrainGroupMean.iloc[i][j] > irisTrainMean.iloc[j]:
+                    nullSet.iloc[i][j] = 1
+                if irisTrainGroupMean.iloc[i][j] < irisTrainMean.iloc[j]:
+                    nullSet.iloc[i][j] = 0
+        print("\n Zbiór miękki irysów \n{}\n".format(nullSet))
+        
+        #typing class of Iris
+        equal = {}
+        #sampleDict = sample.to_dict()
+        namesOfClasses = list(nullSet.index)
+        print()
+        
+        for i in range(0,3):
+            tempEqual = 0
+            for j in range(0,4):
+            #wymnóż sigma( sample[] * class[i][atr])
+                tempEqual += sample[j]*nullSet.iloc[i][j]
+            equal[namesOfClasses[i]] = tempEqual
+        
+        highest = max(equal.values())
+        return ([k for k, v in equal.items() if v == highest])
+        
+        return equal
 
     
 #SoftSet Testing
+#testing IrisSoftSet
 iris=DataProcessing.shuffle(iris)
 iris=DataProcessing.normalize(iris)
 irisTrain, irisVal = DataProcessing.splitSet(iris)
-irisTrainGroupMean = irisTrain.groupby('variety').mean()
-irisTrainMean = irisTrain.mean()
-print("\n irisTrainGroupMean = Zbiór treningowy z użyciem średnich wartości \n{}\n".format(irisTrain.groupby('variety').mean()))
-print("\n irisTrainMean = Zbiór treningowy z użyciem średnich wartości dla całej klasy\n{}\n".format(irisTrain.mean()))
-print("Przykładowy rekord irisTrainGroupMean {} ".format(irisTrainGroupMean['sepal.length']['Setosa'])) #pojedynczy rekord 
-print("Przykładowy rekord irisTrainMean {} ".format(irisTrainMean['sepal.length']))
+sample = irisTrain.iloc[random.randrange(0,len(irisTrain))]
+#print("sample:  \n\n{} ".format(sample))
+#print(type(sample))
+sampleDict = sample.to_dict()
+#print(sampleDict)
+#print(list(sampleDict.keys()))
+print("AI oceniło klasę próbki jako: ===== {}\n".format(SoftSetIris.classifyIris(sample, irisTrain, irisVal)))
+print("Rzeczywista klasa próbki: ===== {}\n".format(sample.loc['variety']))
 
-nullSet = irisTrainGroupMean.copy(deep=True)
-
-for i in range(len(irisTrainGroupMean)):
-    for j in range(len(irisTrainMean)):
-        if irisTrainGroupMean.iloc[i][j] > irisTrainMean.iloc[j]:
-            nullSet.iloc[i][j] = 1
-        if irisTrainGroupMean.iloc[i][j] < irisTrainMean.iloc[j]:
-            nullSet.iloc[i][j] = 0
-
-print("\n Zbiór miękki irysów \n{}\n".format(nullSet))
     
