@@ -41,6 +41,7 @@ class NaiveBayes:
         highest = max(voting.values())
         return ([k for k, v in voting.items() if v == highest])
             
+        
 #testing
 sample = [0.583333,0.333333,0.779661,0.875000]
 print("For given sample {} NaiveBayes returns: {}".format(sample,NaiveBayes.classify(iris,sample)))
