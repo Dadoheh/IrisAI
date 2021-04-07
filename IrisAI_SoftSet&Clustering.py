@@ -101,12 +101,10 @@ class SoftSetIris:
 
         #typing class of Iris
         equal = {}
-        #sampleDict = sample.to_dict()
         namesOfClasses = list(nullSet.index)
         for i in range(0,3):
             tempEqual = 0
             for j in range(0,4):
-            #wymnóż sigma( sample[] * class[i][atr])
                 tempEqual += sample[j]*nullSet.iloc[i][j]
             equal[namesOfClasses[i]] = tempEqual
         highest = max(equal.values())
