@@ -1,7 +1,7 @@
 class NaiveBayes:
         
     @staticmethod 
-    def gauss(a1,classes,i): #a1, mean, std ----a1 to kolejny atrybut próbki sample
+    def gauss(a1,classes,i): #a1, mean, std 
         exponent=np.exp(-(a1-classes[classes.keys()[i]])**2/(2*classes[classes.keys()[i+4]]**2)) #i = 1 -> sepal.length...
         return 1/(np.sqrt(2*np.pi*classes[classes.keys()[i+4]]))*exponent                       #i+4 = 5 -> std.sepal.length...
      
